@@ -1,14 +1,16 @@
-﻿// Copyright (C) TBC Bank. All Rights Reserved.
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Discounts.Domain.Entities
 {
-    internal class ApplicationUser
+    public class ApplicationUser : IdentityUser
     {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public bool IsActive { get; set; } = true;
+
+        // Navigation Properties
+        public ICollection<Offer> Offers { get; set; } = new List<Offer>();// Offers by merchant
+        public ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();// Coupons by costumer
+        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>(); //costumer
     }
 }

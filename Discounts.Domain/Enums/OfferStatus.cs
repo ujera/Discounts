@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Discounts.Domain.Enums
+﻿namespace Discounts.Domain.Enums
 {
-    internal class OfferStatus
+    public enum OfferStatus
     {
+        Pending = 1,
+        Active = 2,
+        Rejected = 3,
+        Expired = 4
     }
 }

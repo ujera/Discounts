@@ -1,4 +1,4 @@
-@Discounts.API_HostAddress = http://localhost:5044
+@Discounts.API_HostAddress = http://localhost:5096
 
 GET {{Discounts.API_HostAddress}}/weatherforecast/
 Accept: application/json
