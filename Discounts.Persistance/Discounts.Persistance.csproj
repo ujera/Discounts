@@ -16,12 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Discounts.Application\Discounts.Application.csproj" />
     <ProjectReference Include="..\Discounts.Domain\Discounts.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Seed\" />
   </ItemGroup>
 
 </Project>

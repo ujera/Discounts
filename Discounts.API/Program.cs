@@ -1,6 +1,8 @@
-using System;
-using Discounts.Persistance;
+using Discounts.API.Infrastructure.Extensions;
+using Discounts.Domain.Entities;
 using Discounts.Persistance.Context;
+using Discounts.Persistance.Seed;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,12 +13,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Add services
+builder.Services.AddServices();
+
 //add dbcontext
 builder.Services.AddDbContext<DiscountsManagementContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly("Discounts.Persistance") // <--- THIS LINE IS CRITICAL
     ));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<DiscountsManagementContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -25,9 +34,15 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    using (var scope = app.Services.CreateScope())
+    {
+        SeedData.Initialize(scope.ServiceProvider);
+    }
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
