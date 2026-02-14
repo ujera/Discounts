@@ -1,7 +1,11 @@
 using Discounts.API.Infrastructure.Extensions;
+using Discounts.Application.Mappings;
+using Discounts.Application.Validators;
 using Discounts.Domain.Entities;
 using Discounts.Persistance.Context;
 using Discounts.Persistance.Seed;
+using FluentValidation;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,12 +24,19 @@ builder.Services.AddServices();
 builder.Services.AddDbContext<DiscountsManagementContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly("Discounts.Persistance") // <--- THIS LINE IS CRITICAL
+        b => b.MigrationsAssembly("Discounts.Persistance")
     ));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DiscountsManagementContext>()
     .AddDefaultTokenProviders();
+
+// 1. Mapster
+MappingConfig.Configure();
+builder.Services.AddMapster();
+
+//Validators
+builder.Services.AddValidatorsFromAssemblyContaining<CreateOfferValidator>();
 
 var app = builder.Build();
 
