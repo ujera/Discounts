@@ -27,5 +27,15 @@ namespace Discounts.Persistance.Repositories
                 .Include(c => c.Offer)
                 .ToListAsync(ct).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<Coupon>> GetByMerchantIdAsync(string merchantId, CancellationToken ct = default)
+        {
+            return await _context.Coupons
+                .Include(c => c.Offer)
+                .Include(c => c.Customer)
+                .Where(c => c.Offer.MerchantId == merchantId)
+                .OrderByDescending(c => c.SoldAt)
+                .ToListAsync(ct).ConfigureAwait(false);
+        }
     }
 }

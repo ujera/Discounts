@@ -1,4 +1,4 @@
-﻿namespace Discounts.Application.Exceptions
+﻿namespace Discounts.Application.Exceptions.ResponceFormat
 {
     public class ApiResponse<T>
     {

@@ -1,5 +1,6 @@
 using Discounts.API.Infrastructure.Extensions;
 using Discounts.API.Infrastructure.Middleware;
+using Discounts.Application;
 using Discounts.Application.Mappings;
 using Discounts.Application.Validators;
 using Discounts.Domain.Entities;
@@ -31,6 +32,9 @@ builder.Services.AddDbContext<DiscountsManagementContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DiscountsManagementContext>()
     .AddDefaultTokenProviders();
+
+// 1. Load Settings
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
 //Mapster
 MappingConfig.Configure();

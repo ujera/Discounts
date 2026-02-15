@@ -3,6 +3,7 @@
 using System.Net;
 using System.Text.Json;
 using Discounts.Application.Exceptions;
+using Discounts.Application.Exceptions.ResponceFormat;
 
 namespace Discounts.API.Infrastructure.Middleware
 {

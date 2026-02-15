@@ -20,11 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Discounts.Infrastructure\Discounts.Infrastructure.csproj" />
     <ProjectReference Include="..\Discounts.Persistance\Discounts.Persistance.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

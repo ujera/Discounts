@@ -2,6 +2,7 @@
 
 using Discounts.Application.Interfaces.Repositories;
 using Discounts.Persistance.Context;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Discounts.Persistance.Repositories
 {
@@ -30,6 +31,10 @@ namespace Discounts.Persistance.Repositories
         public async Task<int> SaveAsync(CancellationToken ct)
         {
             return await _context.SaveChangesAsync(ct).ConfigureAwait(false);
+        }
+        public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct = default)
+        {
+            return await _context.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
         }
 
         public void Dispose()

@@ -1,6 +1,8 @@
 ﻿// Copyright (C) TBC Bank. All Rights Reserved.
 
 using Discounts.Application.Interfaces.Repositories;
+using Discounts.Application.Interfaces.Services;
+using Discounts.Application.Services;
 using Discounts.Persistance.Repositories;
 
 namespace Discounts.API.Infrastructure.Extensions
@@ -16,6 +18,13 @@ namespace Discounts.API.Infrastructure.Extensions
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<ISystemSettingRepository, SystemSettingRepository>();
+
+            //services
+            services.AddScoped<IReservationService, ReservationService>();
+            services.AddScoped<IOfferService, OfferService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IMerchantService, MerchantService>();
+            services.AddScoped<ISystemSettingService, SystemSettingService>();
         }
     }
 }

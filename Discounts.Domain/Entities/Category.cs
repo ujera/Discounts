@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Discounts.Domain.Entities
 {
     public class Category

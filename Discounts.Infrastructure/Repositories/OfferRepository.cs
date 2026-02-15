@@ -55,7 +55,7 @@ namespace Discounts.Persistance.Repositories
                 query = query.Where(o => o.DiscountPrice <= filter.MaxPrice.Value);
             }
 
-            var totalCount = await query.CountAsync().ConfigureAwait(false);
+            var totalCount = await query.CountAsync(ct).ConfigureAwait(false);
 
             var items = await query
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
