@@ -1,6 +1,5 @@
 ﻿
-
-namespace Discounts.Application.DTOs.Common
+namespace Discounts.Application.DTOs.Category
 {
     public class CategoryDto
     {

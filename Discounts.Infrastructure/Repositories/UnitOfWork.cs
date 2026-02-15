@@ -19,7 +19,7 @@ namespace Discounts.Persistance.Repositories
         {
             _context = context;
 
-            //To use same Context and both happen in same transaction
+            //To use same Context and all happen in same transaction
             Offers = new OfferRepository(_context);
             Coupons = new CouponRepository(_context);
             Categories = new CategoryRepository(_context);
@@ -27,9 +27,9 @@ namespace Discounts.Persistance.Repositories
             Settings = new SystemSettingRepository(_context);
         }
 
-        public async Task<int> SaveAsync()
+        public async Task<int> SaveAsync(CancellationToken ct)
         {
-            return await _context.SaveChangesAsync().ConfigureAwait(false);
+            return await _context.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public void Dispose()

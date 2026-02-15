@@ -9,7 +9,7 @@
         IReservationRepository Reservations { get; }
         ISystemSettingRepository Settings { get; }
 
-        Task<int> SaveAsync();
+        Task<int> SaveAsync(CancellationToken ct);
     }
 
 }

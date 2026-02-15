@@ -11,7 +11,7 @@ namespace Discounts.Application.Interfaces.Repositories
 {
     public interface ICouponRepository : IBaseRepository<Coupon>
     {
-        Task<Coupon?> GetByCodeAsync(string code);
-        Task<IEnumerable<Coupon>> GetByCustomerIdAsync(string customerId);
+        Task<Coupon?> GetByCodeAsync(string code, CancellationToken ct);
+        Task<IEnumerable<Coupon>> GetByCustomerIdAsync(string customerId, CancellationToken ct);
     }
 }

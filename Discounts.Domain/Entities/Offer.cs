@@ -20,6 +20,7 @@ namespace Discounts.Domain.Entities
         public OfferStatus Status { get; set; } = OfferStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
+        public string? RejectionReason { get; set; }
 
         // Foreign Keys
         public int CategoryId { get; set; }

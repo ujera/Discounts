@@ -1,4 +1,5 @@
 using Discounts.API.Infrastructure.Extensions;
+using Discounts.API.Infrastructure.Middleware;
 using Discounts.Application.Mappings;
 using Discounts.Application.Validators;
 using Discounts.Domain.Entities;
@@ -31,7 +32,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DiscountsManagementContext>()
     .AddDefaultTokenProviders();
 
-// 1. Mapster
+//Mapster
 MappingConfig.Configure();
 builder.Services.AddMapster();
 
@@ -39,6 +40,8 @@ builder.Services.AddMapster();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOfferValidator>();
 
 var app = builder.Build();
+// Global handler(I should left it 1st there)
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

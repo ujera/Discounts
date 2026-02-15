@@ -6,6 +6,6 @@ namespace Discounts.Application.Interfaces.Repositories
 {
     public interface ICategoryRepository : IBaseRepository<Category>
     {
-        Task<IEnumerable<Category>> GetCategoriesWithActiveOffersAsync();
+        Task<IEnumerable<Category>> GetCategoriesWithActiveOffersAsync(CancellationToken ct);
     }
 }

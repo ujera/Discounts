@@ -13,19 +13,19 @@ namespace Discounts.Persistance.Repositories
         {
         }
 
-        public async Task<Coupon?> GetByCodeAsync(string code)
+        public async Task<Coupon?> GetByCodeAsync(string code, CancellationToken ct)
         {
             return await _context.Coupons
                 .Include(c => c.Offer)
-                .FirstOrDefaultAsync(c => c.Code == code).ConfigureAwait(false);
+                .FirstOrDefaultAsync(c => c.Code == code, ct).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<Coupon>> GetByCustomerIdAsync(string customerId)
+        public async Task<IEnumerable<Coupon>> GetByCustomerIdAsync(string customerId, CancellationToken ct)
         {
             return await _context.Coupons
                 .Where(c => c.CustomerId == customerId)
                 .Include(c => c.Offer)
-                .ToListAsync().ConfigureAwait(false);
+                .ToListAsync(ct).ConfigureAwait(false);
         }
     }
 }

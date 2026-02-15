@@ -18,24 +18,24 @@ namespace Discounts.Persistance.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(int id, CancellationToken ct)
         {
-            return await _dbSet.FindAsync(id).ConfigureAwait(false);
+            return await _dbSet.FindAsync(new object?[] { id, ct }, cancellationToken: ct).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken ct)
         {
-            return await _dbSet.ToListAsync().ConfigureAwait(false);
+            return await _dbSet.ToListAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
-            return await _dbSet.Where(predicate).ToListAsync().ConfigureAwait(false);
+            return await _dbSet.Where(predicate).ToListAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(T entity, CancellationToken ct)
         {
-            await _dbSet.AddAsync(entity).ConfigureAwait(false);
+            await _dbSet.AddAsync(entity,ct).ConfigureAwait(false);
         }
 
         public void Remove(T entity)

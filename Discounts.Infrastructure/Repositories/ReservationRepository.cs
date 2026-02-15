@@ -11,17 +11,17 @@ namespace Discounts.Persistance.Repositories
     {
         public ReservationRepository(DiscountsManagementContext context) : base(context) { }
 
-        public async Task<IEnumerable<Reservation>> GetExpiredReservationsAsync(DateTime expirationThreshold)
+        public async Task<IEnumerable<Reservation>> GetExpiredReservationsAsync(DateTime expirationThreshold, CancellationToken ct)
         {
             return await _context.Reservations
                 .Where(r => r.ReservedAt < expirationThreshold)
-                .ToListAsync().ConfigureAwait(false);
+                .ToListAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task<Reservation?> GetUserReservationForOfferAsync(string userId, int offerId)
+        public async Task<Reservation?> GetUserReservationForOfferAsync(string userId, int offerId, CancellationToken ct)
         {
             return await _context.Reservations
-                .FirstOrDefaultAsync(r => r.UserId == userId && r.OfferId == offerId).ConfigureAwait(false);
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.OfferId == offerId, ct).ConfigureAwait(false);
         }
     }
 }

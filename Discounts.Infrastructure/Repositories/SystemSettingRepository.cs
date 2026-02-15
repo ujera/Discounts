@@ -1,6 +1,5 @@
 ﻿// Copyright (C) TBC Bank. All Rights Reserved.
 
-
 using Discounts.Application.Interfaces.Repositories;
 using Discounts.Domain.Entities;
 using Discounts.Persistance.Context;
@@ -12,9 +11,9 @@ namespace Discounts.Persistance.Repositories
     {
         public SystemSettingRepository(DiscountsManagementContext context) : base(context) { }
 
-        public async Task<SystemSetting?> GetCurrentSettingsAsync()
+        public async Task<SystemSetting?> GetCurrentSettingsAsync(CancellationToken ct)
         {
-            return await _context.SystemSettings.FirstOrDefaultAsync().ConfigureAwait(false);
+            return await _context.SystemSettings.FirstOrDefaultAsync(ct).ConfigureAwait(false);
         }
     }
 }

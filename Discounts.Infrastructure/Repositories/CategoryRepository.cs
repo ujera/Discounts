@@ -11,11 +11,11 @@ namespace Discounts.Persistance.Repositories
     {
         public CategoryRepository(DiscountsManagementContext context) : base(context) { }
 
-        public async Task<IEnumerable<Category>> GetCategoriesWithActiveOffersAsync()
+        public async Task<IEnumerable<Category>> GetCategoriesWithActiveOffersAsync(CancellationToken ct)
         {
             return await _context.Categories
                 .Where(c => c.Offers.Any(o => o.EndDate > DateTime.UtcNow))
-                .ToListAsync().ConfigureAwait(false);
+                .ToListAsync(ct).ConfigureAwait(false);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Discounts.Application.Interfaces.Repositories
 {
     public interface ISystemSettingRepository : IBaseRepository<SystemSetting>
     {
-        Task<SystemSetting?> GetCurrentSettingsAsync();
+        Task<SystemSetting?> GetCurrentSettingsAsync(CancellationToken ct);
     }
 }
