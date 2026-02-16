@@ -114,5 +114,31 @@ namespace Discounts.Application.Services
             var coupons = await _unitOfWork.Coupons.GetByCustomerIdAsync(userId, ct).ConfigureAwait(false);
             return coupons.Adapt<IEnumerable<CouponDto>>();
         }
+
+        public async Task CleanupExpiredReservationsAsync(CancellationToken ct = default)
+        {
+            // Note: For high performance, add "GetExpiredReservationsAsync()" to the Repository 
+            // to avoid loading all reservations into memory. 
+            // For now, this logic is functionally correct:
+
+            var allReservations = await _unitOfWork.Reservations.GetAllAsync(ct).ConfigureAwait(false);
+            var expiredReservations = allReservations.Where(r => r.ExpiresAt < DateTime.UtcNow).ToList();
+
+            if (!expiredReservations.Any()) return;
+
+            foreach (var reservation in expiredReservations)
+            {
+                var offer = await _unitOfWork.Offers.GetByIdAsync(reservation.OfferId, ct).ConfigureAwait(false);
+
+                if (offer != null)
+                {
+                    offer.CouponsCount++;
+                    _unitOfWork.Offers.Update(offer);
+                }
+                _unitOfWork.Reservations.Remove(reservation);
+            }
+
+            await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);
+        }
     }
 }

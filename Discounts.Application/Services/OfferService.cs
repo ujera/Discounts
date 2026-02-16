@@ -118,5 +118,23 @@ namespace Discounts.Application.Services
 
             await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);
         }
+
+        public async Task CleanupExpiredOffersAsync(CancellationToken ct = default)
+        {
+            var expiredOffers = await _unitOfWork.Offers.FindAsync(
+                o => o.Status == OfferStatus.Active && o.EndDate < DateTime.UtcNow,
+                ct
+            ).ConfigureAwait(false);
+
+            if (!expiredOffers.Any()) return;
+
+            foreach (var offer in expiredOffers)
+            {
+                offer.Status = Domain.Enums.OfferStatus.Expired;
+            }
+
+            _unitOfWork.Offers.UpdateRange(expiredOffers);
+            await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);
+        }
     }
 }

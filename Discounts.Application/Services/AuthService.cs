@@ -83,6 +83,10 @@ namespace Discounts.Application.Services
 
         private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
         {
+            if (string.IsNullOrEmpty(_jwtSettings.Key) || _jwtSettings.Key.Length < 16)
+            {
+                throw new InvalidOperationException("JWT Secret Key is not configured or is too short.");
+            }
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Sub, user.Id),

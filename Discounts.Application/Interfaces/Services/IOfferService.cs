@@ -18,5 +18,8 @@ namespace Discounts.Application.Interfaces.Services
 
         // Admin
         Task ApproveOfferAsync(AdminActionDto dto, CancellationToken ct);
+
+        // Worker
+        Task CleanupExpiredOffersAsync(CancellationToken ct = default);
     }
 }

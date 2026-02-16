@@ -12,5 +12,6 @@ namespace Discounts.Application.Interfaces.Repositories
         Task AddAsync(T entity, CancellationToken ct);
         void Remove(T entity);
         void Update(T entity);
+        void UpdateRange(IEnumerable<T> entities);
     }
 }

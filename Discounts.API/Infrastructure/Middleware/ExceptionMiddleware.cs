@@ -51,16 +51,29 @@ namespace Discounts.API.Infrastructure.Middleware
                     response.Message = notFoundEx.Message;
                     break;
 
-                case BadRequestException badRequestEx:
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    response.Message = badRequestEx.Message;
-                    break;
-
                 case UnauthorizedAccessException:
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     response.Message = "You are not authorized to perform this action.";
                     break;
 
+                case AlreadyReservedException alreadyReservedEx:
+                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                    response.Message = alreadyReservedEx.Message;
+                    break;
+
+                case SoldOutException soldOutEx:
+                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                    response.Message = soldOutEx.Message;
+                    break;
+
+                case OfferNotEditableException notEditableEx:
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = notEditableEx.Message;
+                    break;
+                case BadRequestException badRequestEx:
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Message = badRequestEx.Message;
+                    break;
                 default:
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     response.Message = _env.IsDevelopment()
@@ -70,7 +83,7 @@ namespace Discounts.API.Infrastructure.Middleware
             }
 
             var json = JsonSerializer.Serialize(response);
-            await context.Response.WriteAsync(json).ConfigureAwait(true);
+            await context.Response.WriteAsync(json);
         }
     }
 }

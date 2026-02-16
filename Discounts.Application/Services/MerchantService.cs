@@ -23,5 +23,25 @@ namespace Discounts.Application.Services
 
             return coupons.Adapt<IEnumerable<MerchantSalesDto>>();
         }
+
+        public async Task<MerchantStatsDto> GetDashboardStatsAsync(string merchantId, CancellationToken ct = default)
+        {
+            var offers = await _unitOfWork.Offers.FindAsync(o => o.MerchantId == merchantId, ct).ConfigureAwait(false);
+
+            var coupons = await _unitOfWork.Coupons.GetByMerchantIdAsync(merchantId, ct).ConfigureAwait(false);
+
+            var stats = new MerchantStatsDto
+            {
+                TotalOffers = offers.Count(),
+
+                ActiveOffers = offers.Count(o => o.Status == Domain.Enums.OfferStatus.Active),
+
+                TotalCouponsSold = coupons.Count(),
+
+                TotalRevenue = coupons.Sum(c => c.Offer.DiscountPrice)
+            };
+
+            return stats;
+        }
     }
 }

@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "presentation", "presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts.API", "Discounts.API\Discounts.API.csproj", "{0149A0A2-9102-4CFC-B672-17717264D68C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts.Worker", "Discounts.Worker\Discounts.Worker.csproj", "{DD834954-807A-4DA2-83D6-C074F3E53D66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,18 @@ Global
 		{0149A0A2-9102-4CFC-B672-17717264D68C}.Release|x64.Build.0 = Release|Any CPU
 		{0149A0A2-9102-4CFC-B672-17717264D68C}.Release|x86.ActiveCfg = Release|Any CPU
 		{0149A0A2-9102-4CFC-B672-17717264D68C}.Release|x86.Build.0 = Release|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Debug|x64.Build.0 = Debug|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Debug|x86.Build.0 = Debug|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Release|x64.ActiveCfg = Release|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Release|x64.Build.0 = Release|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Release|x86.ActiveCfg = Release|Any CPU
+		{DD834954-807A-4DA2-83D6-C074F3E53D66}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

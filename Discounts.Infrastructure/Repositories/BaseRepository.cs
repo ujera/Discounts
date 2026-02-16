@@ -47,5 +47,9 @@ namespace Discounts.Persistance.Repositories
         {
             _dbSet.Update(entity);
         }
+        public void UpdateRange(IEnumerable<T> entities)
+        {
+            _dbSet.UpdateRange(entities);
+        }
     }
 }
