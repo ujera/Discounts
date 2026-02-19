@@ -2,36 +2,39 @@
 
 using Discounts.Application.Interfaces.Repositories;
 using Discounts.Persistance.Context;
+using Discounts.Persistance.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Discounts.Persistance.Repositories
+namespace Discounts.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DiscountsManagementContext _context;
 
-        public IOfferRepository Offers { get; private set; }
-        public ICouponRepository Coupons { get; private set; }
-        public ICategoryRepository Categories { get; private set; }
-        public IReservationRepository Reservations { get; private set; }
-        public ISystemSettingRepository Settings { get; private set; }
+        private IOfferRepository? _offers;
+        private ICouponRepository? _coupons;
+        private ICategoryRepository? _categories;
+        private IReservationRepository? _reservations;
+        private ISystemSettingRepository? _settings;
 
         public UnitOfWork(DiscountsManagementContext context)
         {
             _context = context;
-
-            //To use same Context and all happen in same transaction
-            Offers = new OfferRepository(_context);
-            Coupons = new CouponRepository(_context);
-            Categories = new CategoryRepository(_context);
-            Reservations = new ReservationRepository(_context);
-            Settings = new SystemSettingRepository(_context);
         }
+
+        //I inject the scoped DbContext via DI, and use Lazy Initialization
+        //passing them the shared context to ensure transaction integrity
+        public IOfferRepository Offers => _offers ??= new OfferRepository(_context);
+        public ICouponRepository Coupons => _coupons ??= new CouponRepository(_context);
+        public ICategoryRepository Categories => _categories ??= new CategoryRepository(_context);
+        public IReservationRepository Reservations => _reservations ??= new ReservationRepository(_context);
+        public ISystemSettingRepository Settings => _settings ??= new SystemSettingRepository(_context);
 
         public async Task<int> SaveAsync(CancellationToken ct)
         {
             return await _context.SaveChangesAsync(ct).ConfigureAwait(false);
         }
+
         public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct = default)
         {
             return await _context.Database.BeginTransactionAsync(ct).ConfigureAwait(false);

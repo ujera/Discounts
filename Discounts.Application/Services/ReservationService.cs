@@ -23,8 +23,6 @@ namespace Discounts.Application.Services
             var settings = await _unitOfWork.Settings.GetCurrentSettingsAsync(ct).ConfigureAwait(false);
             var durationMinutes = settings?.ReservationDurationInMinutes ?? 30;
 
-            // 2. Start Database Transaction (Critical for Stock Management)
-            // We use execution strategy for retries if DB is busy
             using var transaction = await _unitOfWork.BeginTransactionAsync(ct).ConfigureAwait(false);
             try
             {
@@ -114,15 +112,9 @@ namespace Discounts.Application.Services
             var coupons = await _unitOfWork.Coupons.GetByCustomerIdAsync(userId, ct).ConfigureAwait(false);
             return coupons.Adapt<IEnumerable<CouponDto>>();
         }
-
         public async Task CleanupExpiredReservationsAsync(CancellationToken ct = default)
         {
-            // Note: For high performance, add "GetExpiredReservationsAsync()" to the Repository 
-            // to avoid loading all reservations into memory. 
-            // For now, this logic is functionally correct:
-
-            var allReservations = await _unitOfWork.Reservations.GetAllAsync(ct).ConfigureAwait(false);
-            var expiredReservations = allReservations.Where(r => r.ExpiresAt < DateTime.UtcNow).ToList();
+            var expiredReservations = await _unitOfWork.Reservations.GetExpiredReservationsAsync(ct).ConfigureAwait(false);
 
             if (!expiredReservations.Any()) return;
 
@@ -137,8 +129,16 @@ namespace Discounts.Application.Services
                 }
                 _unitOfWork.Reservations.Remove(reservation);
             }
-
             await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);
+        }
+        public async Task<IEnumerable<ReservationResponseDto>> GetCustomerReservationsAsync(string customerId, CancellationToken ct = default)
+        {
+            var reservations = await _unitOfWork.Reservations.FindAsync(
+                r => r.UserId == customerId,
+                ct
+            ).ConfigureAwait(false);
+
+            return reservations.Adapt<IEnumerable<ReservationResponseDto>>();
         }
     }
 }

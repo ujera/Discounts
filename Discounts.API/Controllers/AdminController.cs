@@ -89,5 +89,16 @@ namespace Discounts.API.Controllers
             var status = dto.IsApproved ? "Approved" : "Rejected";
             return OkResponse($"Offer has been {status}.");
         }
+
+        /// <summary>
+        /// Gets a list of all pending offers awaiting admin approval.
+        /// </summary>
+        [HttpGet("offers/pending")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<OfferDto>>), 200)]
+        public async Task<ActionResult<ApiResponse<IEnumerable<OfferDto>>>> GetPendingOffers(CancellationToken ct)
+        {
+            var result = await _offerService.GetPendingOffersAsync(ct);
+            return OkResponse(result);
+        }
     }
 }

@@ -1,0 +1,40 @@
+﻿@model Discounts.MVC.Models.Auth.LoginViewModel
+
+@{
+	ViewData["Title"] = "სისტემაში შესვლა";
+}
+
+<div class="row justify-content-center mt-5">
+	<div class="col-md-4">
+		<div class="card shadow-sm">
+			<div class="card-body p-4">
+				<h3 class="text-center mb-4">ავტორიზაცია</h3>
+
+				<form asp-controller="Auth" asp-action="Login" method="post">
+
+					<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+					<div class="form-floating mb-3">
+						<input asp-for="Email" class="form-control" placeholder="name@example.com" />
+						<label asp-for="Email"></label>
+						<span asp-validation-for="Email" class="text-danger" style="font-size: 0.875em;"></span>
+					</div>
+
+					<div class="form-floating mb-4">
+						<input asp-for="Password" class="form-control" placeholder="პაროლი" />
+						<label asp-for="Password"></label>
+						<span asp-validation-for="Password" class="text-danger" style="font-size: 0.875em;"></span>
+					</div>
+
+					<div class="d-grid">
+						<button type="submit" class="btn btn-primary btn-lg">შესვლა</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

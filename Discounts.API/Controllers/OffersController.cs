@@ -69,9 +69,6 @@ namespace Discounts.API.Controllers
         [ProducesResponseType(400)]
         public async Task<ActionResult<ApiResponse<string>>> Update(int id, [FromBody] UpdateOfferDto dto, CancellationToken ct)
         {
-            if (id != dto.Id)
-                return BadRequest(new ApiResponse<string>("ID mismatch."));
-
             var merchantId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             await _offerService.UpdateAsync(id, dto, merchantId!, ct);

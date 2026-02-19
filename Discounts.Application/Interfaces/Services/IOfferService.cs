@@ -10,6 +10,7 @@ namespace Discounts.Application.Interfaces.Services
         // Customer
         Task<PagedResult<OfferDto>> GetAllActiveAsync(OfferFilterDto filter, CancellationToken ct);
         Task<OfferDto> GetByIdAsync(int id, CancellationToken ct);
+        Task<IEnumerable<OfferDto>> GetActiveOffersAsync(CancellationToken ct = default);
 
         // Merchant
         Task<OfferDto> CreateAsync(CreateOfferDto dto, string merchantId, CancellationToken ct);
@@ -18,6 +19,7 @@ namespace Discounts.Application.Interfaces.Services
 
         // Admin
         Task ApproveOfferAsync(AdminActionDto dto, CancellationToken ct);
+        Task<IEnumerable<OfferDto>> GetPendingOffersAsync(CancellationToken ct = default);
 
         // Worker
         Task CleanupExpiredOffersAsync(CancellationToken ct = default);

@@ -1,8 +1,11 @@
-namespace Discounts.MVC.Models;
+// Copyright (C) TBC Bank. All Rights Reserved.
 
-public class ErrorViewModel
+namespace Discounts.MVC.Models
 {
-    public string? RequestId { get; set; }
+    public class ErrorViewModel
+    {
+        public string? RequestId { get; set; }
 
-    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+    }
 }

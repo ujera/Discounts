@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Discounts.Application.DTOs.Offer.OfferDto>
+
+@{
+	ViewData["Title"] = "Pending Offers - Admin Dashboard";
+}
+
+<div class="container mt-5">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h2><i class="bi bi-clock-history"></i> Pending Offers</h2>
+	</div>
+
+	<div class="card shadow-sm">
+		<div class="card-body p-0">
+			<table class="table table-hover table-striped mb-0">
+				<thead class="table-dark">
+					<tr>
+						<th>ID</th>
+						<th>Image</th>
+						<th>Title</th>
+						<th>Price (Original / Discount)</th>
+						<th>Coupons</th>
+						<th>Dates</th>
+						<th class="text-center">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (!Model.Any())
+					{
+						<tr>
+							<td colspan="7" class="text-center text-muted py-4">
+								ამჟამად არ არის pending offer-ს.
+							</td>
+						</tr>
+					}
+					else
+					{
+						foreach (var offer in Model)
+						{
+							<tr>
+								<td class="align-middle">@offer.Id</td>
+								<td class="align-middle">
+									<img src="@offer.ImageUrl" alt="@offer.Title" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+								</td>
+								<td class="align-middle fw-bold">@offer.Title</td>
+								<td class="align-middle">
+									<span class="text-decoration-line-through text-muted">@offer.OriginalPrice ₾</span>
+									<br />
+									<span class="text-success fw-bold">@offer.DiscountPrice ₾</span>
+								</td>
+								<td class="align-middle">@offer.CouponsCount</td>
+								<td class="align-middle" style="font-size: 0.9em;">
+									<div><strong>Start:</strong> @offer.StartDate.ToShortDateString()</div>
+									<div><strong>End:</strong> @offer.EndDate.ToShortDateString()</div>
+								</td>
+								<td class="align-middle text-center">
+
+									<div class="d-flex justify-content-center gap-2">
+
+										<form asp-controller="Admin" asp-action="HandleOfferAction" method="post">
+											<input type="hidden" name="offerId" value="@offer.Id" />
+											<input type="hidden" name="isApproved" value="true" />
+											<button type="submit" class="btn btn-sm btn-success">
+												Approve
+											</button>
+										</form>
+
+										<form asp-controller="Admin" asp-action="HandleOfferAction" method="post" onsubmit="return confirm('Are you sure you want to reject this offer?');">
+											<input type="hidden" name="offerId" value="@offer.Id" />
+											<input type="hidden" name="isApproved" value="false" />
+											<button type="submit" class="btn btn-sm btn-danger">
+												Reject
+											</button>
+										</form>
+
+									</div>
+								</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

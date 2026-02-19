@@ -55,6 +55,7 @@ namespace Discounts.Application.Services
                 throw new OfferNotEditableException($"The {editWindow}-hour edit window has passed.");
             }
 
+            offer.Status = OfferStatus.Pending;// i think after update is should be pending
             dto.Adapt(offer);
 
             _unitOfWork.Offers.Update(offer);
@@ -130,11 +131,31 @@ namespace Discounts.Application.Services
 
             foreach (var offer in expiredOffers)
             {
-                offer.Status = Domain.Enums.OfferStatus.Expired;
+                offer.Status = OfferStatus.Expired;
             }
 
             _unitOfWork.Offers.UpdateRange(expiredOffers);
             await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);
+        }
+        public async Task<IEnumerable<OfferDto>> GetPendingOffersAsync(CancellationToken ct = default)
+        {
+            var pendingOffers = await _unitOfWork.Offers.FindAsync(
+                o => o.Status == OfferStatus.Pending,
+                ct
+            ).ConfigureAwait(false);
+
+            // Map to DTOs and return
+            return pendingOffers.Adapt<IEnumerable<OfferDto>>();
+        }
+
+        public async Task<IEnumerable<OfferDto>> GetActiveOffersAsync(CancellationToken ct = default)
+        {
+            var activeOffers = await _unitOfWork.Offers.FindAsync(
+                o => o.Status == OfferStatus.Active && o.EndDate >= DateTime.UtcNow,
+                ct
+            ).ConfigureAwait(false);
+
+            return activeOffers.Adapt<IEnumerable<OfferDto>>();
         }
     }
 }

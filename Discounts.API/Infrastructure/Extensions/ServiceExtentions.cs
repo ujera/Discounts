@@ -6,6 +6,7 @@ using Discounts.Application;
 using Discounts.Application.Interfaces.Repositories;
 using Discounts.Application.Interfaces.Services;
 using Discounts.Application.Services;
+using Discounts.Infrastructure.Repositories;
 using Discounts.Persistance.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

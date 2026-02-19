@@ -25,9 +25,6 @@ namespace Discounts.Worker
                 {
                     using var scope = _serviceProvider.CreateScope();
 
-                    // 1. Resolve Services
-                    // Note: We are reusing the exact same Service Logic from Application Layer!
-                    // We don't write new logic here, we just RUN it.
                     var reservationService = scope.ServiceProvider.GetRequiredService<IReservationService>();
                     var offerService = scope.ServiceProvider.GetRequiredService<IOfferService>();
 
@@ -42,7 +39,6 @@ namespace Discounts.Worker
                     _logger.LogError(ex, "Worker failed to execute cleanup.");
                 }
 
-                // 3. Wait 1 Minute
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken).ConfigureAwait(false);
             }
         }

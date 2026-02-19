@@ -8,7 +8,6 @@ namespace Discounts.Application.Validators
     {
         public UpdateOfferValidator()
         {
-            RuleFor(x => x.Id).GreaterThan(0);
             RuleFor(x => x.Title).NotEmpty().MaximumLength(100);
             RuleFor(x => x.DiscountPrice)
                 .LessThan(x => x.OriginalPrice)

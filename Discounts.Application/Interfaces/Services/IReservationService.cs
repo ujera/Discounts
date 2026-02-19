@@ -13,5 +13,6 @@ namespace Discounts.Application.Interfaces.Services
         Task<IEnumerable<CouponDto>> GetMyCouponsAsync(string userId, CancellationToken ct = default);
 
         Task CleanupExpiredReservationsAsync(CancellationToken ct = default);
+        Task<IEnumerable<ReservationResponseDto>> GetCustomerReservationsAsync(string customerId, CancellationToken ct = default);
     }
 }

@@ -1,29 +1,61 @@
-//var builder = WebApplication.CreateBuilder(args);
+// Copyright (C) TBC Bank. All Rights Reserved.
 
-//// Add services to the container.
-//builder.Services.AddControllersWithViews();
+using Discounts.Application.Interfaces.Services;
+using Discounts.Application.Mappings;
+using Discounts.Application.Services;
+using Discounts.Domain.Entities;
+using Discounts.MVC.Infrastructure.Extensions;
+using Discounts.Persistance.Context;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
-//var app = builder.Build();
+var builder = WebApplication.CreateBuilder(args);
 
-//// Configure the HTTP request pipeline.
-//if (!app.Environment.IsDevelopment())
-//{
-//    app.UseExceptionHandler("/Home/Error");
-//    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-//    app.UseHsts();
-//}
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
-//app.UseHttpsRedirection();
-//app.UseRouting();
+//Add Database
+builder.Services.AddDbContext<DiscountsManagementContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//app.UseAuthorization();
+// Add Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<DiscountsManagementContext>()
+.AddDefaultTokenProviders();
 
-//app.MapStaticAssets();
+//MVC Cookie behavior
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Auth/AccessDenied";
+});
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}")
-//    .WithStaticAssets();
+builder.Services.AddServices();
 
+MappingConfig.Configure();
 
-//app.Run();
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();

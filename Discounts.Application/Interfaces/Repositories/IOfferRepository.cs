@@ -8,10 +8,10 @@ namespace Discounts.Application.Interfaces.Repositories
 {
     public interface IOfferRepository : IBaseRepository<Offer>
     {
-        // Custom method: Get offers with their Category and Merchant loaded
+        //offers with their Category and Merchant loaded
         Task<Offer?> GetOfferWithDetailsAsync(int id, CancellationToken ct);
 
-        // Custom method: Get all active offers for the homepage
+        //all active offers for the homepage
         Task<IEnumerable<Offer>> GetActiveOffersAsync(CancellationToken ct);
         Task<PagedResult<Offer>> GetPagedOffersAsync(OfferFilterDto filter, CancellationToken ct);
     }

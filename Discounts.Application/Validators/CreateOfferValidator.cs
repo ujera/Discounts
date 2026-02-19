@@ -15,7 +15,7 @@ namespace Discounts.Application.Validators
                 .NotEmpty()
                 .MaximumLength(500);
 
-            RuleFor(x => x.OriginalPrice)
+            RuleFor(x => x.OriginalPrice).NotEmpty().WithMessage("Price is required.")
                 .GreaterThan(0).WithMessage("Price must be greater than 0.");
 
             RuleFor(x => x.DiscountPrice)
