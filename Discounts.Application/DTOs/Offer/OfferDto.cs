@@ -17,5 +17,6 @@ namespace Discounts.Application.DTOs.Offer
 
         public string CategoryName { get; set; } = string.Empty;
         public string MerchantName { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
     }
 }

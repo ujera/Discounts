@@ -1,0 +1,91 @@
+﻿@model Discounts.MVC.Models.Merchant.EditOfferViewModel
+
+@{
+	ViewData["Title"] = "ფასდაკლების რედაქტირება";
+}
+
+<div class="container mt-4">
+	<h2><i class="bi bi-pencil-square text-warning"></i> ფასდაკლების რედაქტირება</h2>
+	<hr />
+
+	<form asp-action="Edit" method="post">
+		<input type="hidden" asp-for="Id" />
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card shadow-sm mb-3">
+					<div class="card-header bg-light">ძირითადი ინფორმაცია</div>
+					<div class="card-body">
+						<div class="mb-3">
+							<label asp-for="Title" class="form-label fw-bold"></label>
+							<input asp-for="Title" class="form-control" />
+							<span asp-validation-for="Title" class="text-danger"></span>
+						</div>
+
+						<div class="mb-3">
+							<label asp-for="Description" class="form-label fw-bold"></label>
+							<textarea asp-for="Description" class="form-control" rows="4"></textarea>
+							<span asp-validation-for="Description" class="text-danger"></span>
+						</div>
+
+						<div class="mb-3">
+							<label asp-for="CategoryId" class="form-label fw-bold"></label>
+							<select asp-for="CategoryId" asp-items="Model.Categories" class="form-select"></select>
+							<span asp-validation-for="CategoryId" class="text-danger"></span>
+						</div>
+
+						<div class="mb-3">
+							<label asp-for="ImageUrl" class="form-label fw-bold"></label>
+							<input asp-for="ImageUrl" class="form-control" />
+							<span asp-validation-for="ImageUrl" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="card shadow-sm mb-3">
+					<div class="card-header bg-light">
+						ფინანსები და ვადები
+						<span class="badge bg-warning text-dark float-end" title="ამ ველების შეცვლა შექმნის შემდეგ შეუძლებელია">
+							<i class="bi bi-lock-fill"></i> დაბლოკილია
+						</span>
+					</div>
+					<div class="card-body bg-light opacity-75">
+						<div class="row">
+							<div class="col-6 mb-3">
+								<label asp-for="OriginalPrice" class="form-label fw-bold"></label>
+								<input asp-for="OriginalPrice" class="form-control bg-secondary text-white" readonly type="number" step="0.01" />
+							</div>
+							<div class="col-6 mb-3">
+								<label asp-for="DiscountPrice" class="form-label fw-bold"></label>
+								<input asp-for="DiscountPrice" class="form-control bg-secondary text-white" readonly type="number" step="0.01" />
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label asp-for="CouponsCount" class="form-label fw-bold"></label>
+							<input asp-for="CouponsCount" class="form-control bg-secondary text-white" readonly type="number" />
+						</div>
+
+						<div class="row">
+							<div class="col-6 mb-3">
+								<label asp-for="StartDate" class="form-label fw-bold"></label>
+								<input asp-for="StartDate" class="form-control bg-secondary text-white" readonly type="date" />
+							</div>
+							<div class="col-6 mb-3">
+								<label asp-for="EndDate" class="form-label fw-bold"></label>
+								<input asp-for="EndDate" class="form-control bg-secondary text-white" readonly type="date" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="d-grid gap-2">
+					<button type="submit" class="btn btn-warning btn-lg text-dark fw-bold">ცვლილებების შენახვა</button>
+					<a asp-action="Index" class="btn btn-outline-secondary">გაუქმება</a>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

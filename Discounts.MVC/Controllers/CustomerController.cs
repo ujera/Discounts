@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Discounts.Application.Interfaces.Services;
+using Discounts.MVC.Models.Customer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,10 +25,14 @@ namespace Discounts.MVC.Controllers
             {
                 return RedirectToAction("Login", "Auth");
             }
-
-            var myCoupons = await _reservationService.GetCustomerReservationsAsync(userId, ct);
-
-            return View(myCoupons);
+            var reservations = await _reservationService.GetCustomerReservationsAsync(userId, ct);
+            var purchasedCoupons = await _reservationService.GetMyCouponsAsync(userId, ct);
+            var viewModel = new MyCouponsViewModel
+            {
+                ActiveReservations = reservations,
+                PurchasedCoupons = purchasedCoupons
+            };
+            return View(viewModel);
         }
     }
 }

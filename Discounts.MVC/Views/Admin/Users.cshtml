@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Discounts.Application.DTOs.User.UserDto>
+
+@{
+	ViewData["Title"] = "მომხმარებლების მართვა";
+}
+
+<div class="container mt-5">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h2><i class="bi bi-people text-primary"></i> მომხმარებლების მართვა</h2>
+
+		<form method="get" class="d-flex">
+			<select name="role" class="form-select me-2" onchange="this.form.submit()">
+				<option value="">ყველა როლი</option>
+				<option value="Customer" selected="@(ViewBag.SelectedRole == "Customer")">მომხმარებლები</option>
+				<option value="Merchant" selected="@(ViewBag.SelectedRole == "Merchant")">მერჩანტები</option>
+			</select>
+		</form>
+	</div>
+	<hr />
+
+	@if (TempData["SuccessMessage"] != null)
+	{
+		<div class="alert alert-success alert-dismissible fade show">@TempData["SuccessMessage"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+	}
+	@if (TempData["ErrorMessage"] != null)
+	{
+		<div class="alert alert-danger alert-dismissible fade show">@TempData["ErrorMessage"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+	}
+
+	<div class="card shadow-sm">
+		<div class="card-body p-0">
+			<table class="table table-hover align-middle mb-0">
+				<thead class="table-dark">
+					<tr>
+						<th>სახელი / გვარი</th>
+						<th>ელ. ფოსტა</th>
+						<th>როლი</th>
+						<th>სტატუსი</th>
+						<th class="text-end">მოქმედებები</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var user in Model)
+					{
+						<tr>
+							<td class="fw-bold">@user.FirstName @user.LastName</td>
+							<td>@user.Email</td>
+							<td><span class="badge bg-secondary">@user.Role</span></td>
+							<td>
+								@if (user.IsActive)
+								{
+									<span class="badge bg-success">აქტიური</span>
+								}
+								else
+								{
+									<span class="badge bg-danger">დაბლოკილი</span>
+								}
+							</td>
+							<td class="text-end">
+								<div class="btn-group">
+									<form asp-action="ToggleBlockUser" method="post" class="d-inline">
+										<input type="hidden" name="id" value="@user.Id" />
+										<button type="submit" class="btn btn-sm @(user.IsActive ? "btn-warning" : "btn-success")">
+											<i class="bi @(user.IsActive ? "bi-lock" : "bi-unlock")"></i>
+											@(user.IsActive ? "დაბლოკვა" : "განბლოკვა")
+										</button>
+									</form>
+									<form asp-action="DeleteUser" method="post" class="d-inline ms-1" onsubmit="return confirm('ნამდვილად გსურთ წაშლა?');">
+										<input type="hidden" name="id" value="@user.Id" />
+										<button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+									</form>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

@@ -10,25 +10,84 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Discounts.MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+			<div class="container-fluid">
+				<a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
+					<i class="bi bi-tags-fill"></i> Discounts.Ge
+				</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">მთავარი</a>
+						</li>
+
+						@if (User.Identity != null && User.Identity.IsAuthenticated)
+						{
+							@if (User.IsInRole("Admin"))
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+										ადმინ პანელი
+									</a>
+									<ul class="dropdown-menu">
+										<li><a class="dropdown-item" asp-controller="Admin" asp-action="PendingOffers">განსახილველი ფასდაკლებები</a></li>
+										<li><a class="dropdown-item" asp-controller="Admin" asp-action="Settings">გლობალური პარამეტრები</a></li>
+										<li><a class="dropdown-item" asp-controller="Admin" asp-action="Categories">კატეგორიების მართვა</a></li>
+										<li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">მომხმარებლები</a></li>
+									</ul>
+								</li>
+							}
+							else if (User.IsInRole("Merchant"))
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle text-dark" href="#" id="merchantDropdown" role="button" data-bs-toggle="dropdown">
+										მერჩანტ პანელი
+									</a>
+									<ul class="dropdown-menu">
+										<li><a class="dropdown-item" asp-controller="Merchant" asp-action="Index">Dashboard</a></li>
+										<li><a class="dropdown-item" asp-controller="Merchant" asp-action="MyOffers">ჩემი შეთავაზებები</a></li>
+										<li><a class="dropdown-item" asp-controller="Merchant" asp-action="CreateOffer">ახალის დამატება</a></li>
+									</ul>
+								</li>
+							}
+							else if (User.IsInRole("Customer"))
+							{
+								<li class="nav-item">
+									<a class="nav-link text-dark" asp-controller="Customer" asp-action="MyCoupons">ჩემი კუპონები</a>
+								</li>
+							}
+						}
+					</ul>
+
+					<ul class="navbar-nav">
+						@if (User.Identity != null && User.Identity.IsAuthenticated)
+						{
+							<li class="nav-item">
+								<span class="nav-link text-muted">გამარჯობა, @User.Identity.Name!</span>
+							</li>
+							<li class="nav-item">
+								<form asp-controller="Auth" asp-action="Logout" method="post" class="form-inline">
+									<button type="submit" class="nav-link btn btn-link text-danger">გასვლა</button>
+								</form>
+							</li>
+						}
+						else
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">რეგისტრაცია</a>
+							</li>
+							<li class="nav-item">
+								<a class="btn btn-primary" asp-controller="Auth" asp-action="Login">შესვლა</a>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+		</nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">

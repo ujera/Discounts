@@ -1,0 +1,58 @@
+﻿@model Discounts.Application.DTOs.Admin.SystemSettingsDto
+
+@{
+	ViewData["Title"] = "სისტემური პარამეტრები";
+}
+
+<div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<h2><i class="bi bi-gear-fill"></i> გლობალური პარამეტრები</h2>
+			<hr />
+
+			@if (TempData["SuccessMessage"] != null)
+			{
+				<div class="alert alert-success alert-dismissible fade show">
+					@TempData["SuccessMessage"]
+					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				</div>
+			}
+
+			<div class="card shadow-sm">
+				<div class="card-body p-4">
+					<form asp-action="UpdateSettings" method="post">
+
+						<div class="mb-4">
+							<label class="form-label fw-bold">
+								<i class="bi bi-clock-history text-primary"></i>
+								ჯავშნის ხანგრძლივობა (წუთებში)
+							</label>
+							<div class="input-group">
+								<input asp-for="ReservationDurationInMinutes" class="form-control" type="number" min="1" required />
+								<span class="input-group-text">წუთი</span>
+							</div>
+							<small class="text-muted">ამ დროის გასვლის შემდეგ Worker Service ავტომატურად გააუქმებს დაუდასტურებელ ჯავშნებს.</small>
+						</div>
+
+						<div class="mb-4">
+							<label class="form-label fw-bold">
+								<i class="bi bi-pencil-square text-warning"></i>
+								რედაქტირების ლიმიტი (საათებში)
+							</label>
+							<div class="input-group">
+								<input asp-for="MerchantEditWindowInHours" class="form-control" type="number" min="0" required />
+								<span class="input-group-text">საათი</span>
+							</div>
+							<small class="text-muted">მერჩანტს შეეძლება შეთავაზების რედაქტირება შექმნიდან მხოლოდ ამდენი საათის განმავლობაში.</small>
+						</div>
+
+						<div class="d-grid mt-4">
+							<button type="submit" class="btn btn-primary btn-lg">ცვლილებების შენახვა</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

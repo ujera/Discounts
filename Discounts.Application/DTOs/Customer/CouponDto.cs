@@ -9,5 +9,6 @@ namespace Discounts.Application.DTOs.Customer
         public DateTime SoldAt { get; set; }
         public bool IsUsed { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
+        public DateTime OfferEndDate;
     }
 }

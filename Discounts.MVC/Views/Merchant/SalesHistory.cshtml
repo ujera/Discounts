@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Discounts.Application.DTOs.Merchant.MerchantSalesDto>
+
+@{
+	ViewData["Title"] = "გაყიდვების ისტორია";
+}
+
+<div class="container mt-5">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h2><i class="bi bi-list-check text-success"></i> გაყიდვების ისტორია</h2>
+		<a asp-action="Index" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> უკან დაბრუნება</a>
+	</div>
+
+	<div class="card shadow-sm">
+		<div class="card-body p-0">
+			@if (!Model.Any())
+			{
+				<div class="alert alert-light text-center m-0 py-5">
+					<i class="bi bi-inbox text-muted fs-1"></i>
+					<p class="mt-3 mb-0 text-muted">გაყიდვები ჯერ არ ფიქსირდება.</p>
+				</div>
+			}
+			else
+			{
+				<table class="table table-hover table-striped mb-0">
+					<thead class="table-dark">
+						<tr>
+							<th>კუპონის კოდი</th>
+							<th>ფასდაკლების დასახელება</th>
+							<th>გადახდილი თანხა</th>
+							<th>მომხმარებლი</th>
+							<th>გაყიდვის თარიღი</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var sale in Model)
+						{
+							<tr>
+								<td class="align-middle fw-bold text-primary">@sale.CouponCode</td>
+								<td class="align-middle">@sale.OfferTitle</td>
+								<td class="align-middle fw-bold text-success">@sale.PricePaid.ToString("C")</td>
+								<td class="align-middle text-muted">@sale.CustomerName</td>
+								<td class="align-middle">@sale.SoldAt.ToLocalTime().ToString("g")</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+		</div>
+	</div>
+</div>

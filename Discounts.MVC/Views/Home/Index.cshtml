@@ -1,59 +1,124 @@
-﻿@model IEnumerable<Discounts.Application.DTOs.Offer.OfferDto>
-
+﻿@model Discounts.Application.Pagination.PagedResult<Discounts.Application.DTOs.Offer.OfferDto>
 @{
 	ViewData["Title"] = "მთავარი - Discounts.Ge";
+	var currentFilter = ViewBag.CurrentFilter as Discounts.Application.DTOs.Offer.OfferFilterDto;
 }
 
 <div class="text-center mb-5 mt-4">
 	<h1 class="display-4 fw-bold text-primary">დღის საუკეთესო ფასდაკლებები</h1>
-	<p class="lead text-muted">იყიდე კუპონი და დაზოგე თანხა!</p>
 </div>
 
 <div class="container">
-	@if (!Model.Any())
+
+	<div class="card shadow-sm border-0 mb-4 bg-light">
+		<div class="card-body p-4">
+			<form asp-controller="Home" asp-action="Index" method="get" class="row g-3 align-items-center">
+
+				<div class="col-md-4">
+					<label class="form-label small text-muted mb-1">ძიება</label>
+					<div class="input-group">
+						<span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+						<input type="text" name="SearchTerm" class="form-control" placeholder="რას ეძებთ?" value="@currentFilter?.SearchTerm">
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<label class="form-label small text-muted mb-1">კატეგორია</label>
+					<div class="input-group">
+						<span class="input-group-text bg-white"><i class="bi bi-tags"></i></span>
+						<select name="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+							<option value="">ყველა</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<label class="form-label small text-muted mb-1">მაქს. ფასი (₾)</label>
+					<div class="input-group">
+						<span class="input-group-text bg-white"><i class="bi bi-cash"></i></span>
+						<input type="number" name="MaxPrice" class="form-control" step="0.01" min="0" placeholder="მაგ: 50" value="@currentFilter?.MaxPrice">
+					</div>
+				</div>
+
+				<div class="col-md-2 d-flex align-items-end">
+					<button type="submit" class="btn btn-primary w-100">
+						<i class="bi bi-funnel"></i> გაფილტვრა
+					</button>
+				</div>
+
+				<input type="hidden" name="PageNumber" value="1" />
+			</form>
+		</div>
+	</div>
+
+	@if (!Model.Items.Any())
 	{
-		<div class="alert alert-info text-center">
-			<i class="bi bi-info-circle"></i> ამჟამად აქტიური ფასდაკლებები არ მოიძებნა.
+		<div class="alert alert-info text-center py-5">
+			<i class="bi bi-info-circle fs-1"></i>
+			<h4 class="mt-3">ფასდაკლებები არ მოიძებნა. სცადეთ სხვა პარამეტრები.</h4>
 		</div>
 	}
 	else
 	{
 		<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-			@foreach (var offer in Model)
+			@foreach (var offer in Model.Items)
 			{
 				<div class="col">
 					<div class="card h-100 shadow-sm border-0 position-relative">
-						@{
-							var discountPercent = Math.Round((1 - (offer.DiscountPrice / offer.OriginalPrice)) * 100);
-						}
-						<span class="badge bg-danger position-absolute top-0 start-0 m-2 p-2" style="font-size: 0.9em;">
-							-@discountPercent%
-						</span>
-
 						<img src="@offer.ImageUrl" class="card-img-top" alt="@offer.Title" style="height: 200px; object-fit: cover;">
-
 						<div class="card-body d-flex flex-column">
 							<h5 class="card-title fw-bold">@offer.Title</h5>
-
 							<div class="mt-auto">
 								<hr />
-								<div class="d-flex justify-content-between align-items-center mb-2">
+								<div class="d-flex justify-content-between align-items-center mb-3">
 									<span class="text-decoration-line-through text-muted small">@offer.OriginalPrice.ToString("C")</span>
 									<span class="text-success fw-bold fs-5">@offer.DiscountPrice.ToString("C")</span>
 								</div>
-
-								<div class="d-flex justify-content-between text-muted small mb-3">
-									<span><i class="bi bi-ticket-perforated"></i> დარჩა: @offer.CouponsCount</span>
-								</div>
-
-								<a asp-controller="Offer" asp-action="Details" asp-route-id="@offer.Id" class="btn btn-outline-primary w-100">
-									დეტალების ნახვა
-								</a>
+								<a asp-controller="Offer" asp-action="Details" asp-route-id="@offer.Id" class="btn btn-outline-primary w-100">დეტალების ნახვა</a>
 							</div>
 						</div>
 					</div>
 				</div>
 			}
 		</div>
+
+		@if (Model.TotalPages > 1)
+		{
+			<nav class="mt-5 d-flex justify-content-center">
+				<ul class="pagination">
+
+					<li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+						<a class="page-link" asp-action="Index"
+						   asp-route-SearchTerm="@currentFilter?.SearchTerm"
+						   asp-route-CategoryId="@currentFilter?.CategoryId"
+						   asp-route-MaxPrice="@currentFilter?.MaxPrice"
+						   asp-route-PageNumber="@(Model.PageNumber - 1)">
+							&laquo; წინა
+						</a>
+					</li>
+
+					@for (int i = 1; i <= Model.TotalPages; i++)
+					{
+						<li class="page-item @(i == Model.PageNumber ? "active" : "")">
+							<a class="page-link" asp-action="Index"
+							   asp-route-SearchTerm="@currentFilter?.SearchTerm"
+							   asp-route-CategoryId="@currentFilter?.CategoryId"
+							   asp-route-MaxPrice="@currentFilter?.MaxPrice"
+							   asp-route-PageNumber="@i">@i</a>
+						</li>
+					}
+
+					<li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+						<a class="page-link" asp-action="Index"
+						   asp-route-SearchTerm="@currentFilter?.SearchTerm"
+						   asp-route-CategoryId="@currentFilter?.CategoryId"
+						   asp-route-MaxPrice="@currentFilter?.MaxPrice"
+						   asp-route-PageNumber="@(Model.PageNumber + 1)">
+							შემდეგი &raquo;
+						</a>
+					</li>
+				</ul>
+			</nav>
+		}
 	}
 </div>
