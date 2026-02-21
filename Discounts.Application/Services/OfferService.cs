@@ -57,6 +57,7 @@ namespace Discounts.Application.Services
 
             offer.Status = OfferStatus.Pending;// i think after update is should be pending
             dto.Adapt(offer);
+            offer.UpdatedAt = DateTime.UtcNow;
 
             _unitOfWork.Offers.Update(offer);
             await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);

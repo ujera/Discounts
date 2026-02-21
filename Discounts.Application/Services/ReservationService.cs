@@ -1,5 +1,6 @@
 ﻿// Copyright (C) TBC Bank. All Rights Reserved.
 
+using System.Linq.Expressions;
 using Discounts.Application.DTOs.Customer;
 using Discounts.Application.Exceptions;
 using Discounts.Application.Interfaces.Repositories;

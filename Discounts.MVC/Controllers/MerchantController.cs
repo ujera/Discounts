@@ -158,7 +158,5 @@ namespace Discounts.MVC.Controllers
                 Text = c.Name
             });
         }
-
-
     }
 }
