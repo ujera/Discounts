@@ -1,8 +1,6 @@
 // Copyright (C) TBC Bank. All Rights Reserved.
 
-using Discounts.Application.Interfaces.Services;
 using Discounts.Application.Mappings;
-using Discounts.Application.Services;
 using Discounts.Domain.Entities;
 using Discounts.MVC.Infrastructure.Extensions;
 using Discounts.Persistance.Context;

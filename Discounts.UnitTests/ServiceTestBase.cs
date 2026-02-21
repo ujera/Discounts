@@ -1,6 +1,7 @@
-﻿using Moq;
-using AutoMapper;
+﻿using AutoMapper;
 using Discounts.Application.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
+using Moq;
 
 namespace Discounts.Application.Tests
 {
@@ -14,6 +15,7 @@ namespace Discounts.Application.Tests
         protected readonly Mock<ICouponRepository> MockCouponRepo = new();
         protected readonly Mock<IReservationRepository> MockReservationRepo = new();
         protected readonly Mock<ISystemSettingRepository> MockSettingRepo = new();
+        protected readonly Mock<IDbContextTransaction> MockTransaction = new();
 
         protected ServiceTestBase()
         {
@@ -25,6 +27,8 @@ namespace Discounts.Application.Tests
             MockUnitOfWork.Setup(u => u.Coupons).Returns(MockCouponRepo.Object);
             MockUnitOfWork.Setup(u => u.Reservations).Returns(MockReservationRepo.Object);
             MockUnitOfWork.Setup(u => u.Settings).Returns(MockSettingRepo.Object);
+            MockUnitOfWork.Setup(u => u.BeginTransactionAsync(It.IsAny<CancellationToken>()))
+               .ReturnsAsync(MockTransaction.Object);
 
             MockUnitOfWork.Setup(u => u.SaveAsync(It.IsAny<CancellationToken>()))
                          .ReturnsAsync(1);
