@@ -129,8 +129,8 @@ namespace Discounts.API.Infrastructure.Extensions
                                 Id = "Bearer"
                             }
                         },
-                        new string[] {}
-                     }
+                        Array.Empty<string>()//no scopes for this scheme
+                    }
                 });
             });
         }

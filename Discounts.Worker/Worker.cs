@@ -28,7 +28,6 @@ namespace Discounts.Worker
                     var reservationService = scope.ServiceProvider.GetRequiredService<IReservationService>();
                     var offerService = scope.ServiceProvider.GetRequiredService<IOfferService>();
 
-                   
                     await reservationService.CleanupExpiredReservationsAsync(stoppingToken).ConfigureAwait(false);
                     await offerService.CleanupExpiredOffersAsync(stoppingToken).ConfigureAwait(false);
 

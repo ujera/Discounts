@@ -20,7 +20,7 @@ namespace Discounts.Persistance.Repositories
 
         public async Task<T?> GetByIdAsync(int id, CancellationToken ct)
         {
-            return await _dbSet.FindAsync(new object?[] { id, ct }, cancellationToken: ct).ConfigureAwait(false);
+            return await _dbSet.FindAsync([id, ct], cancellationToken: ct).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken ct)
@@ -33,10 +33,7 @@ namespace Discounts.Persistance.Repositories
             return await _dbSet.Where(predicate).ToListAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task AddAsync(T entity, CancellationToken ct)
-        {
-            await _dbSet.AddAsync(entity,ct).ConfigureAwait(false);
-        }
+        public async Task AddAsync(T entity, CancellationToken ct) => await _dbSet.AddAsync(entity, ct).ConfigureAwait(false);
 
         public void Remove(T entity)
         {

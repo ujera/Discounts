@@ -11,7 +11,6 @@ namespace Discounts.Persistance.Configurations
         {
             builder.ToTable("SystemSettings");
 
-
             builder.Property(x => x.ReservationDurationInMinutes)
                 .IsRequired()
                 .HasDefaultValue(30);

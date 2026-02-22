@@ -21,12 +21,10 @@ namespace Discounts.Persistance.Seed
 
                 Migrate(context);
 
-         
                 SeedEverything(context, userManager, roleManager).Wait();
             }
             catch (Exception ex)
             {
-                // Log errors here if you have a logger
                 Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
             }
         }
@@ -91,10 +89,10 @@ namespace Discounts.Persistance.Seed
 
             var categories = new List<Category>
             {
-                new Category { Name = "Food & Dining" },
-                new Category { Name = "Entertainment" },
-                new Category { Name = "Travel" },
-                new Category { Name = "Electronics" }
+                new() { Name = "Food & Dining" },
+                new() { Name = "Entertainment" },
+                new() { Name = "Travel" },
+                new() { Name = "Electronics" }
             };
 
             context.Categories.AddRange(categories);

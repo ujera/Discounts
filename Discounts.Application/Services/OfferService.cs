@@ -121,6 +121,16 @@ namespace Discounts.Application.Services
             await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);
         }
 
+        public async Task RejectOfferAsync(int id, string reason, CancellationToken ct = default)
+        {
+            var offer = await _unitOfWork.Offers.GetByIdAsync(id, ct).ConfigureAwait(false) ?? throw new NotFoundException("Offer", id);
+            offer.Status = OfferStatus.Rejected;
+            offer.RejectionReason = reason;
+
+            _unitOfWork.Offers.Update(offer);
+            await _unitOfWork.SaveAsync(ct).ConfigureAwait(false);
+        }
+
         public async Task CleanupExpiredOffersAsync(CancellationToken ct = default)
         {
             var expiredOffers = await _unitOfWork.Offers.FindAsync(

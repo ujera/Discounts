@@ -1,6 +1,5 @@
 ﻿// Copyright (C) TBC Bank. All Rights Reserved.
 
-using System.Linq.Expressions;
 using Discounts.Application.DTOs.Customer;
 using Discounts.Application.Exceptions;
 using Discounts.Application.Interfaces.Repositories;
@@ -27,9 +26,7 @@ namespace Discounts.Application.Services
             using var transaction = await _unitOfWork.BeginTransactionAsync(ct).ConfigureAwait(false);
             try
             {
-                var offer = await _unitOfWork.Offers.GetByIdAsync(offerId, ct).ConfigureAwait(false);
-                if (offer == null) throw new NotFoundException("Offer", offerId);
-
+                var offer = await _unitOfWork.Offers.GetByIdAsync(offerId, ct).ConfigureAwait(false) ?? throw new NotFoundException("Offer", offerId);
                 if (offer.CouponsCount <= 0)
                     throw new SoldOutException(offer.Title);
 

@@ -19,6 +19,7 @@ namespace Discounts.Application.Interfaces.Services
 
         // Admin
         Task ApproveOfferAsync(AdminActionDto dto, CancellationToken ct);
+        Task RejectOfferAsync(int id, string reason, CancellationToken ct = default);
         Task<IEnumerable<OfferDto>> GetPendingOffersAsync(CancellationToken ct = default);
 
         // Worker

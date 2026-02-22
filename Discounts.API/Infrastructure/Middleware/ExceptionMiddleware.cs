@@ -24,12 +24,12 @@ namespace Discounts.API.Infrastructure.Middleware
         {
             try
             {
-                await _next(context).ConfigureAwait(true);
+                await _next(context);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "TraceId: {TraceId}, Message: {Message}", context.TraceIdentifier, ex.Message);
-                await HandleExceptionAsync(context, ex).ConfigureAwait(true);
+                await HandleExceptionAsync(context, ex);
             }
         }
 
@@ -78,7 +78,7 @@ namespace Discounts.API.Infrastructure.Middleware
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     response.Message = _env.IsDevelopment()
                         ? exception.Message
-                        : "Internal Server Error. Please contact support.";
+                        : "Internal Server Error.";
                     break;
             }
 

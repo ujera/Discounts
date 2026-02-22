@@ -38,7 +38,6 @@ namespace Discounts.Persistance.Configurations
                 .IsRequired()
                 .HasColumnType("datetime2");
 
-          
             builder.Property(x => x.Status)
                 .HasConversion<string>()
                 .IsRequired();

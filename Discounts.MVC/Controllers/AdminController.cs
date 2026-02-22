@@ -45,6 +45,18 @@ namespace Discounts.MVC.Controllers
 
             return RedirectToAction(nameof(PendingOffers));
         }
+        [HttpPost]
+        public async Task<IActionResult> Reject(int id, string reason)
+        {
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                TempData["Error"] = "გთხოვთ მიუთითოთ უარყოფის მიზეზი";
+                return RedirectToAction("PendingOffers");
+            }
+
+            await _offerService.RejectOfferAsync(id, reason);
+            return RedirectToAction("PendingOffers");
+        }
 
         // კატეგორიების მართვა
         [HttpGet]

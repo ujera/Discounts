@@ -10,7 +10,6 @@ namespace Discounts.Persistance.Configurations
         {
             builder.ToTable("Coupons");
 
-
             builder.Property(x => x.Code)
                 .IsRequired()
                 .HasMaxLength(20);

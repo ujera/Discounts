@@ -54,27 +54,54 @@
 								</td>
 								<td class="align-middle text-center">
 
-									<div class="d-flex justify-content-center gap-2">
-
-										<form asp-controller="Admin" asp-action="HandleOfferAction" method="post">
+									<div class="d-flex align-items-center justify-content-center gap-2">
+										<form asp-controller="Admin" asp-action="HandleOfferAction" method="post" class="m-0">
 											<input type="hidden" name="offerId" value="@offer.Id" />
 											<input type="hidden" name="isApproved" value="true" />
-											<button type="submit" class="btn btn-sm btn-success">
-												Approve
+											<button type="submit" class="btn btn-sm btn-success d-inline-flex align-items-center shadow-sm">
+												<i class="bi bi-check-circle me-1"></i> Approve
 											</button>
 										</form>
 
-										<form asp-controller="Admin" asp-action="HandleOfferAction" method="post" onsubmit="return confirm('Are you sure you want to reject this offer?');">
-											<input type="hidden" name="offerId" value="@offer.Id" />
-											<input type="hidden" name="isApproved" value="false" />
-											<button type="submit" class="btn btn-sm btn-danger">
-												Reject
-											</button>
-										</form>
+										<button type="button" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center shadow-sm"
+												data-bs-toggle="modal" data-bs-target="#rejectModal-@offer.Id">
+											<i class="bi bi-x-circle me-1"></i> Reject
+										</button>
 
+										<div class="modal fade" id="rejectModal-@offer.Id" tabindex="-1" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-content border-0 shadow-lg">
+													<div class="modal-header bg-danger text-white">
+														<h5 class="modal-title">
+															<i class="bi bi-exclamation-triangle-fill me-2"></i>უარყოფის მიზეზი
+														</h5>
+														<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+													</div>
+													<form asp-action="Reject" method="post">
+														<input type="hidden" name="id" value="@offer.Id" />
+														<div class="modal-body p-4">
+															<label class="form-label fw-bold text-muted mb-2">გთხოვთ მიუთითოთ მიზეზი მერჩანტისთვის:</label>
+															<textarea name="reason" class="form-control border-2 shadow-none"
+															  rows="4" required
+															  placeholder="მაგ: სურათი არ შეესაბამება სტანდარტებს..."></textarea>
+															<div class="form-text mt-2">ეს შეტყობინება გაეგზავნება მერჩანტს მის პანელში.</div>
+														</div>
+														<div class="modal-footer bg-light border-0">
+															<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">გაუქმება</button>
+															<button type="submit" class="btn btn-danger px-4 shadow-sm">
+																<i class="bi bi-send-fill me-1"></i> დადასტურება
+															</button>
+														</div>
+													</form>
+												</div>
+											</div>
+										</div>
 									</div>
+									
 								</td>
+								
 							</tr>
+							
 						}
 					}
 				</tbody>

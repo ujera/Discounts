@@ -11,7 +11,6 @@ namespace Discounts.Persistance.Configurations
         {
             builder.ToTable("Reservations");
 
-
             builder.Property(x => x.ReservedAt)
                 .IsRequired()
                 .HasColumnType("datetime2");

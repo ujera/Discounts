@@ -60,6 +60,16 @@
 									{
 										<span class="badge bg-warning text-dark">განხილვაშია</span>
 									}
+									else if (offer.Status == "Rejected")
+									{
+										<span class="badge bg-danger">უარყოფილია</span>
+										@if (!string.IsNullOrEmpty(offer.RejectionReason))
+										{
+											<div class="mt-1 small text-danger" title="უარყოფის მიზეზი">
+												<i class="bi bi-exclamation-circle"></i> @offer.RejectionReason
+											</div>
+										}
+									}
 									else
 									{
 										<span class="badge bg-secondary">@offer.Status</span>
