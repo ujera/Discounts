@@ -58,9 +58,9 @@ namespace Discounts.Persistance.Repositories
             var totalCount = await query.CountAsync(ct).ConfigureAwait(false);
 
             var items = await query
+                .OrderByDescending(o => o.CreatedAt)
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
-                .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync(ct).ConfigureAwait(false);
 
             return new PagedResult<Offer>(items, totalCount, filter.PageNumber, filter.PageSize);

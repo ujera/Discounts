@@ -12,10 +12,12 @@ namespace Discounts.API.Controllers
     public class ReservationsController : BaseApiController
     {
         private readonly IReservationService _reservationService;
+        private readonly ILogger<ReservationsController> _logger;
 
-        public ReservationsController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService, ILogger<ReservationsController> logger)
         {
             _reservationService = reservationService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -31,9 +33,18 @@ namespace Discounts.API.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = await _reservationService.ReserveOfferAsync(offerId, userId!, ct).ConfigureAwait(true);
+            _logger.LogInformation("მომხმარებელი {UserId} ცდილობს დაჯავშნოს შეთავაზება {OfferId}", userId, offerId);
+            try
+            {
+                var result = await _reservationService.ReserveOfferAsync(offerId, userId!, ct).ConfigureAwait(true);
 
-            return OkResponse(result, "Offer reserved successfully. You have 30 minutes to complete purchase.");
+                return OkResponse(result, "Offer reserved successfully. You have 30 minutes to complete purchase.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "შეცდომა ჯავშნისას შეთავაზებაზე {OfferId} მომხმარებლისთვის {UserId}", offerId, userId);
+                throw;
+            }
         }
 
         /// <summary>

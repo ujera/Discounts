@@ -10,6 +10,7 @@ using FluentValidation;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,17 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"))
 MappingConfig.Configure();
 builder.Services.AddMapster();
 
+// Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext());
+
 //Validators
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOfferValidator>();
 
@@ -59,6 +71,7 @@ if (app.Environment.IsDevelopment())
         SeedData.Initialize(scope.ServiceProvider);
     }
 }
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

@@ -100,6 +100,7 @@ namespace Discounts.API.Infrastructure.Extensions
                     Title = "Discounts API",
                     Version = "v1"
                 });
+                options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Discounts API V2", Version = "v2" });
 
                 var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

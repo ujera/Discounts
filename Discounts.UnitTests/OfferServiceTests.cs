@@ -19,7 +19,6 @@ namespace Discounts.UnitTests
             _service = new OfferService(MockUnitOfWork.Object);
         }
 
-
         #region CreateAsync Tests
 
         [Fact]
