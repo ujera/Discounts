@@ -6,7 +6,6 @@ using Discounts.Application.Interfaces.Services;
 using Discounts.MVC.Models.Merchant;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -93,7 +92,7 @@ namespace Discounts.MVC.Controllers
 
 
             TempData["SuccessMessage"] = "შეთავაზება წარმატებით შეიქმნა და ელოდება ადმინისტრატორის დასტურს!";
-            return RedirectToAction(nameof(CreateOffer)); // დროებით ისევ აქ დავაბრუნოთ
+            return RedirectToAction(nameof(CreateOffer));
         }
 
         // რედაქტირების გვერდი
@@ -106,7 +105,7 @@ namespace Discounts.MVC.Controllers
             var offer = await _offerService.GetByIdAsync(id, ct);
 
             var settings = await _settingsService.GetSettingsAsync(ct);
-            int editLimitHours = settings.MerchantEditWindowInHours;
+            var editLimitHours = settings.MerchantEditWindowInHours;
 
             if (offer.CreatedAt.AddHours(editLimitHours) < DateTime.UtcNow)
             {

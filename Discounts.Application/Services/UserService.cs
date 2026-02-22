@@ -1,5 +1,6 @@
 ﻿// Copyright (C) TBC Bank. All Rights Reserved.
 
+using System.Data;
 using Discounts.Application.DTOs.User;
 using Discounts.Application.Exceptions;
 using Discounts.Application.Interfaces.Services;
@@ -79,7 +80,11 @@ namespace Discounts.Application.Services
         public async Task DeleteUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id).ConfigureAwait(false) ?? throw new NotFoundException("User", id);
-            
+
+            var roles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+            if (roles.Contains("Admin"))
+                throw new BadRequestException("You cannot delete an Administrator.");
+
             await _userManager.DeleteAsync(user).ConfigureAwait(false);
         }
     }
