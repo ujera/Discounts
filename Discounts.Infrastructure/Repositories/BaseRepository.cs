@@ -23,7 +23,7 @@ namespace Discounts.Persistance.Repositories
             return await _dbSet.FindAsync([id, ct], cancellationToken: ct).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken ct)
+        public async Task<IEnumerable<T>> GetAllAsync( CancellationToken ct)
         {
             return await _dbSet.ToListAsync(ct).ConfigureAwait(false);
         }
