@@ -2,6 +2,7 @@
 
 using System.Security.Claims;
 using System.Text;
+using Asp.Versioning;
 using Discounts.Application;
 using Discounts.Application.Interfaces.Repositories;
 using Discounts.Application.Interfaces.Services;
@@ -102,6 +103,15 @@ namespace Discounts.API.Infrastructure.Extensions
                 });
                 options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Discounts API V2", Version = "v2" });
 
+                options.DocInclusionPredicate((docName, apiDesc) =>
+                {
+                    var groupName = apiDesc.GroupName;
+
+                    if (string.IsNullOrEmpty(groupName)) return true;
+
+                    return groupName == docName;
+                });
+
                 var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 if (File.Exists(xmlPath))
@@ -133,6 +143,21 @@ namespace Discounts.API.Infrastructure.Extensions
                         Array.Empty<string>()//no scopes for this scheme
                     }
                 });
+            });
+        }
+        public static void AddApiVersioningConfig(this IServiceCollection services)
+        {
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                
+                options.ReportApiVersions = true;
+            })
+            .AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
             });
         }
     }

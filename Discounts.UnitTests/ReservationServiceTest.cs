@@ -1,4 +1,5 @@
-﻿using Discounts.Application.Exceptions;
+﻿using Discounts.Application.DTOs.Customer;
+using Discounts.Application.Exceptions;
 using Discounts.Application.Services;
 using Discounts.Application.Tests;
 using Discounts.Domain.Entities;
@@ -86,6 +87,146 @@ namespace Discounts.UnitTests
 
             // Assert
             MockTransaction.Verify(t => t.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        #region PurchaseReservationAsync Tests
+
+        [Fact]
+        public async Task PurchaseReservationAsync_WhenReservationNotFound_ShouldThrowNotFound()
+        {
+            // Arrange
+            MockReservationRepo.Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                               .ReturnsAsync((Reservation?)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NotFoundException>(() =>
+                _service.PurchaseReservationAsync(1, "user-1", CancellationToken.None));
+        }
+
+        [Fact]
+        public async Task PurchaseReservationAsync_WhenReservationExpired_ShouldThrowBadRequest()
+        {
+            // Arrange
+            var reservation = new Reservation
+            {
+                Id = 1,
+                UserId = "user-1",
+                ExpiresAt = DateTime.UtcNow.AddMinutes(-31) // Expired  30min limit
+            };
+
+            MockReservationRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                               .ReturnsAsync(reservation);
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<BadRequestException>(() =>
+                _service.PurchaseReservationAsync(1, "user-1", CancellationToken.None));
+
+            Assert.Contains("expired", ex.Message.ToLower());
+        }
+
+        [Fact]
+        public async Task PurchaseReservationAsync_WhenValid_ShouldCreateCouponAndCompleteTransaction()
+        {
+            // Arrange
+            var userId = "user-1";
+            var reservation = new Reservation
+            {
+                Id = 1,
+                UserId = userId,
+                OfferId = 10,
+                ReservedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(31)
+            };
+
+            // Setup offer
+            var offer = new Offer { Id = 10, Title = "Sushi Deal" };
+            MockOfferRepo.Setup(o => o.GetByIdAsync(10, It.IsAny<CancellationToken>())).ReturnsAsync(offer);
+
+            MockReservationRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                               .ReturnsAsync(reservation);
+
+            // Act
+            var result = await _service.PurchaseReservationAsync(1, userId, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Code);
+
+            // Verify
+            MockTransaction.Verify(t => t.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockCouponRepo.Verify(c => c.AddAsync(It.IsAny<Coupon>(), It.IsAny<CancellationToken>()), Times.Once);
+            MockUnitOfWork.Verify(u => u.SaveAsync(It.IsAny<CancellationToken>()), Times.AtLeastOnce);
+        }
+
+        [Fact]
+        public async Task PurchaseReservationAsync_OnDatabaseFailure_ShouldRollbackTransaction()
+        {
+            // Arrange
+            var userId = "user-1";
+            var reservation = new Reservation { Id = 1, UserId = userId, OfferId = 10, ReservedAt = DateTime.UtcNow, ExpiresAt = DateTime.UtcNow.AddMinutes(31) };
+
+            MockReservationRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                               .ReturnsAsync(reservation);
+
+            // Simulate
+            MockCouponRepo.Setup(c => c.AddAsync(It.IsAny<Coupon>(), It.IsAny<CancellationToken>()))
+                          .ThrowsAsync(new Exception("Database connection lost"));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() =>
+                _service.PurchaseReservationAsync(1, userId, CancellationToken.None));
+
+            // Verify Rollback happened
+            MockTransaction.Verify(t => t.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
+            MockTransaction.Verify(t => t.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        #endregion
+
+        [Theory]
+        [InlineData(29, false)] // (Success)
+        [InlineData(31, true)]  //  (Expired)
+        public async Task PurchaseReservation_TimeBoundaries_ShouldValidateExpiry(int minutesAgo, bool shouldFail)
+        {
+            // Arrange
+            var userId = "user-1";
+            var offerId = 10;
+            var reservedAt = DateTime.UtcNow.AddMinutes(-minutesAgo);
+            var reservation = new Reservation
+            {
+                Id = 1,
+                UserId = userId,
+                OfferId = offerId,
+                ReservedAt = reservedAt,
+                ExpiresAt = reservedAt.AddMinutes(30)
+            };
+
+            MockReservationRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+                               .ReturnsAsync(reservation);
+
+            if (!shouldFail)
+            {
+                MockOfferRepo.Setup(o => o.GetByIdAsync(offerId, It.IsAny<CancellationToken>()))
+                             .ReturnsAsync(new Offer { Id = offerId, Title = "Test Offer", DiscountPrice = 50 });
+
+                MockCouponRepo.Setup(c => c.AddAsync(It.IsAny<Coupon>(), It.IsAny<CancellationToken>()))
+                              .Returns(Task.CompletedTask);
+
+                MockMapper.Setup(m => m.Map<CouponDto>(It.IsAny<Coupon>()))
+                          .Returns(new CouponDto { Code = "SUCCESS-CODE" });
+            }
+
+            // Act & Assert
+            if (shouldFail)
+            {
+                await Assert.ThrowsAsync<BadRequestException>(() =>
+                    _service.PurchaseReservationAsync(1, userId, CancellationToken.None));
+            }
+            else
+            {
+                var result = await _service.PurchaseReservationAsync(1, userId, CancellationToken.None);
+                Assert.NotNull(result);
+            }
         }
     }
 }

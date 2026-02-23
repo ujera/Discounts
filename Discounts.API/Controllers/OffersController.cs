@@ -1,6 +1,7 @@
 ﻿// Copyright (C) TBC Bank. All Rights Reserved.
 
 using System.Security.Claims;
+using Asp.Versioning;
 using Discounts.Application.DTOs.Offer;
 using Discounts.Application.Exceptions.ResponceFormat;
 using Discounts.Application.Interfaces.Services;
@@ -10,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Discounts.API.Controllers
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class OffersController : BaseApiController
     {
         private readonly IOfferService _offerService;
@@ -20,15 +23,28 @@ namespace Discounts.API.Controllers
         }
 
         /// <summary>
-        /// Gets all active offers with pagination and filtering.
+        /// Gets all active offers with pagination and filtering. (V1)
         /// </summary>
         [HttpGet]
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<OfferDto>>), 200)]
         public async Task<ActionResult<ApiResponse<PagedResult<OfferDto>>>> GetAll([FromQuery] OfferFilterDto filter, CancellationToken ct)
         {
             var result = await _offerService.GetAllActiveAsync(filter, ct);
             return OkResponse(result);
+        }
+        /// <summary>
+        /// Gets all active offers (V2) 
+        /// </summary>
+        [HttpGet]
+        [MapToApiVersion("2.0")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<OfferDto>>), 200)]
+        public async Task<ActionResult<ApiResponse<PagedResult<OfferDto>>>> GetAllV2([FromQuery] OfferFilterDto filter, CancellationToken ct)
+        {
+            var result = await _offerService.GetAllActiveAsync(filter, ct);
+            return OkResponse(result, "This is the V2 response.");
         }
 
         /// <summary>

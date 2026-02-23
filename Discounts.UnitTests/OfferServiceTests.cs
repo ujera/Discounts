@@ -57,6 +57,52 @@ namespace Discounts.UnitTests
 
         #endregion
 
+        #region UpdateAsync Tests
+
+        [Fact]
+        public async Task UpdateAsync_WhenOfferDoesNotExist_ShouldThrowNotFoundException()
+        {
+            // Arrange
+            var offerId = 999;
+            var updateDto = new UpdateOfferDto { Title = "New Title" };
+
+            MockOfferRepo.Setup(r => r.GetByIdAsync(offerId, It.IsAny<CancellationToken>()))
+                         .ReturnsAsync((Offer?)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NotFoundException>(() =>
+                _service.UpdateAsync(offerId, updateDto, "merchant-1", CancellationToken.None));
+
+            // Verify 
+            MockUnitOfWork.Verify(u => u.SaveAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WhenValid_ShouldUpdateFieldsAndSave()
+        {
+            // Arrange
+            var offerId = 1;
+            var merchantId = "merchant-1";
+            var existingOffer = new Offer { Id = offerId, MerchantId = merchantId, Title = "Old Title", DiscountPrice = 50 };
+            var updateDto = new UpdateOfferDto { Title = "New Title", DiscountPrice = 40 };
+
+            MockOfferRepo.Setup(r => r.GetByIdAsync(offerId, It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(existingOffer);
+
+            // Act
+            await _service.UpdateAsync(offerId, updateDto, merchantId, CancellationToken.None);
+
+            // Assert
+            Assert.Equal("New Title", existingOffer.Title);
+            Assert.Equal(40, existingOffer.DiscountPrice);
+
+            // Verify Update was called on repo and Saved
+            MockOfferRepo.Verify(r => r.Update(existingOffer), Times.Once);
+            MockUnitOfWork.Verify(u => u.SaveAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        #endregion
+
         #region Cleanup Logic Tests
 
         [Fact]
@@ -168,6 +214,35 @@ namespace Discounts.UnitTests
             Assert.Single(result);
             MockOfferRepo.Verify(r => r.FindAsync(It.IsAny<Expression<Func<Offer, bool>>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
+        [Theory]
+        [InlineData("Sushi", null, true)]   //by Text
+        [InlineData(null, 50, true)]          //by Price
+        [InlineData(null, null, false)]     // No filters
+        public async Task GetAllActiveAsync_VariousFilters_ShouldCallRepositoryCorrectly(
+    string? term,int? maxPrice, bool hasFilters)
+        {
+            // Arrange
+            var filter = new OfferFilterDto
+            {
+                SearchTerm = term,
+                MaxPrice = maxPrice
+            };
+
+            MockOfferRepo.Setup(r => r.GetPagedOffersAsync(It.IsAny<OfferFilterDto>(), It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(new PagedResult<Offer>(new List<Offer>(), 0, 1, 10));
+
+            // Act
+            await _service.GetAllActiveAsync(filter, CancellationToken.None);
+
+            // Assert
+            // Verify
+            // the Service didn't lose data before calling the Repo
+            MockOfferRepo.Verify(r => r.GetPagedOffersAsync(
+                It.Is<OfferFilterDto>(f => f.SearchTerm == term && f.MaxPrice == maxPrice),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
         #endregion
 
         #region Pagination Tests

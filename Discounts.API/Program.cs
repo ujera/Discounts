@@ -18,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddApiVersioningConfig();
 //Swagger
 builder.Services.AddSwaggerGenWithAuth();
 //Add services
@@ -65,7 +66,12 @@ app.UseMiddleware<ExceptionMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Discounts API v1");
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Discounts API v2");
+    });
     using (var scope = app.Services.CreateScope())
     {
         SeedData.Initialize(scope.ServiceProvider);

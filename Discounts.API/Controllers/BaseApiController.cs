@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Discounts.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    //[Route("api/v1/[controller]")]
     public abstract class BaseApiController : ControllerBase
     {
         protected ActionResult<ApiResponse<T>> OkResponse<T>(T data, string message = "")
